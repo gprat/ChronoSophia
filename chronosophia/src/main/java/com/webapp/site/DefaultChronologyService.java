@@ -1,0 +1,68 @@
+package com.webapp.site;
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.webapp.site.entities.Category;
+import com.webapp.site.entities.Chronology;
+import com.webapp.site.entities.Event;
+import com.webapp.site.repositories.ChronologyRepository;
+
+
+@Service
+public class DefaultChronologyService implements ChronologyService {
+	
+	@Inject ChronologyRepository chronologyRepository;
+	
+	@Override
+	public List<Chronology> getAllChronologies(){
+		List<Chronology> list = new ArrayList<>();
+		chronologyRepository.findAll().forEach(e->list.add(e));
+		return list;
+	}
+	
+	@Override
+	public Chronology getChronology(long id){
+		return chronologyRepository.findOne(id);
+	}
+	
+	@Override
+	public List<Chronology> getChronologies(long id){
+		return chronologyRepository.findByIdChronology(id);
+	}
+	
+	@Override
+	public void save(Chronology chronology){
+		chronologyRepository.save(chronology);
+	}
+	
+	@Override
+	public void delete(long id){
+		chronologyRepository.delete(id);
+	}
+	
+	@Override
+	public ChronologyForm getChronologyForm(long id){
+		Chronology chronology = getChronology(id);
+		ChronologyForm chronologyForm = new ChronologyForm();
+		if(chronology!=null){
+			String eventList="";
+			for(Event e: chronology.getEvents()){
+				eventList=eventList.concat(String.valueOf(e.getIdEvent())+",");
+			}
+			if(eventList!="") eventList.substring(1,eventList.length()-1);
+			chronologyForm.eventList=eventList;
+			chronologyForm.category=String.valueOf(chronology.getCategory().getIdCategory());
+			chronologyForm.id=chronology.getIdChronology();
+			chronologyForm.name=chronology.getName();
+		}
+		return chronologyForm;
+	}
+
+}
