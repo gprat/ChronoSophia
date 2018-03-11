@@ -11,6 +11,16 @@ public class CityForm {
 	private BigDecimal latitude;
 	
 	private BigDecimal longitude;
+	
+	private Long idCity;
+
+	public Long getIdCity() {
+		return idCity;
+	}
+
+	public void setIdCity(Long idCity) {
+		this.idCity = idCity;
+	}
 
 	public BigDecimal getLatitude() {
 		return latitude;

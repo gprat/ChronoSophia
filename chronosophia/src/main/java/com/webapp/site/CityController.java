@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,10 +52,16 @@ public class CityController {
         return "city/add";
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.POST)
+    @RequestMapping(value = "save", method = RequestMethod.POST)
     public View createCity(CityForm form)
     {
-    	City city = new City();
+    	City city;
+    	if(form.getIdCity()==null||form.getIdCity()==0){
+    		city = new City();
+    	}
+    	else{
+    		city=this.cityService.getCity(form.getIdCity());
+    	}
     	city.setName(form.getCityname());
     	cityService.setCountry(city, form.getCountryname());
     	city.setLatitude(form.getLatitude().setScale(6, RoundingMode.HALF_UP));
@@ -74,5 +81,18 @@ public class CityController {
 		}
     	return "city/view";
     }
+    
+    @RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
+	public String ShowUpdateCityForm(@PathVariable("id") long id, Model model) {
+		CityForm cityForm = this.cityService.getCityForm(id);
+		model.addAttribute("cityForm", cityForm);
+		return "city/add";
+	}
+    
+    @RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
+	public View deleteCity(@PathVariable("id") long id){
+		this.cityService.deleteCity(id);
+		return new RedirectView("/city/list", true, false);
+	}
 
 }

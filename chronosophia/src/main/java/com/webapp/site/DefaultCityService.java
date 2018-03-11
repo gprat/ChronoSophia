@@ -50,5 +50,16 @@ public class DefaultCityService implements CityService {
 		}
 		city.setCountry(country);
 	}
+	
+	public CityForm getCityForm(long id){
+		City city = getCity(id);
+		CityForm form = new CityForm();
+		form.setIdCity(id);
+		form.setCityname(city.getName());
+		form.setCountryname(city.getCountry().getName());
+		form.setLatitude(city.getLatitude());
+		form.setLongitude(city.getLongitude());
+		return form;
+	}
 
 }

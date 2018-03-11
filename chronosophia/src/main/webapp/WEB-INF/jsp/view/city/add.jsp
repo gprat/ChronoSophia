@@ -15,12 +15,13 @@
 </head>
 <body>
  <h1>Ajouter une ville</h1>
-	<form:form method="post" modelAttribute="cityForm">
+ <spring:url value="/city/save" var="cityActionUrl" />
+	<form:form method="post" modelAttribute="cityForm" action="${cityActionUrl}">
 		<div id="locationField">
 			<input id="autocomplete" placeholder="Enter your address"
 				onFocus="geolocate()" type="text"></input>
 		</div>
-
+		<form:hidden path="idCity" />
 		<form:label path="cityname" >Nom de la ville : </form:label>
 		<form:input path="cityname" id="locality"/>
 		<br />

@@ -29,4 +29,6 @@ public interface CityService {
 	void deleteCity(long id);
 	
 	void setCountry(City city,String countryname);
+	
+	CityForm getCityForm(long id);
 }
