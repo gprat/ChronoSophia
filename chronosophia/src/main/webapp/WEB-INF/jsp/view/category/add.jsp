@@ -12,9 +12,10 @@
 </head>
 <body>
  <h1>Ajouter une catégorie</h1>
-	<form:form method="post" modelAttribute="category">
-		<form:label path="name" >Nom de la  catégorie : </form:label>
-		<form:input path="name"/>
+ <spring:url value="/category/save" var="categoryActionUrl" />
+	<form:form method="post" modelAttribute="categoryForm" action="${categoryActionUrl}">
+		<form:label path="CategoryName" >Nom de la  catégorie : </form:label>
+		<form:input path="CategoryName"/>
 		<br />
 		<input type="submit" value="Sauver" />
 		<input type="reset" value="Reinitialiser" />

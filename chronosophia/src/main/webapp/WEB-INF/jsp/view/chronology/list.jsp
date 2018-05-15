@@ -11,11 +11,24 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Liste des Chronologies</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-	<p>Chronologies</p>
+<div class="container">
+	<h3>Chronologies</h3>
 	
-	<TABLE BORDER="1">
+	<TABLE class="table table-bordered">
 		<TR>
 			<TH>Nom</TH>
 			<TH>Opérations</TH>
@@ -29,13 +42,14 @@
 				<TD>
 					<spring:url value="/chronology/${chronology.idChronology}/delete" var="deleteUrl" />
 					<spring:url value="/chronology/${chronology.idChronology}/update" var="updateUrl" />
-					<button onclick="location.href='${updateUrl}'">Mettre à jour</button>
-				  	<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" /> </form:form>
+					<button onclick="location.href='${updateUrl}'" class="btn">Mettre à jour</button>
+				  	<form:form method="post" action="${deleteUrl}" style="display: inline;" > <input type="submit" value="Supprimer" class="btn" /> </form:form>
 				 </TD>
 			</TR>
 		</c:forEach>
 	</TABLE>
-	
-
+	<spring:url value="/chronology/add" var="addUrl" />
+	<button onclick="location.href='${addUrl}'" class="btn">Créer une chronologie</button>
+</div>
 </body>
 </html>

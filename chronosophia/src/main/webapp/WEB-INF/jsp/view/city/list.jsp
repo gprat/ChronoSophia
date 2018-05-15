@@ -11,13 +11,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Liste des Villes</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
 <body>
+<div class="container">
 	<p>Villes</p>
-	<TABLE BORDER="1">
+	<TABLE class="table table-bordered">
 		<TR>
 			<TH>Nom</TH>
 			<TH>Pays</TH>
+			<th>Opérations</th>
 		</TR>
 		<c:forEach items="${cities}" var="city">
 			<TR>
@@ -32,5 +46,8 @@
 			</TR>
 		</c:forEach>
 	</TABLE>
+	<spring:url value="/city/add" var="addUrl" />
+	<button onclick="location.href='${addUrl}'" class="btn">Créer une ville</button>
+</div>
 </body>
 </html>

@@ -27,12 +27,15 @@ public class CategoryController {
 	
 	@RequestMapping(value = "add", method = RequestMethod.GET)
 	public String createCategory(Map<String, Object> model){
-		model.put("category",new Category());
+		model.put("categoryForm",new CategoryForm());
+		System.out.println("test");
 		return("category/add");
 	}
 	
-	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public View createCategory(Category category){
+	@RequestMapping(value = "save", method = RequestMethod.POST)
+	public View createCategory(CategoryForm categoryForm){
+		Category category = new Category();
+		category.setName(categoryForm.getCategoryName());
 		this.categoryService.save(category);
 		return new RedirectView("/category/list", true, false);
 	}

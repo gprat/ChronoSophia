@@ -11,31 +11,45 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Liste des personnages</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<p>Personnages</p>
+<div class="container">
+	<h3>Personnages</h3>
 	
 	<spring:url value="/figure/list" var="selectUrl" />
 	
-	<form:form method="post" modelAttribute="selectFigureForm" action="${selectUrl}" >
-		
+	<form:form method="post" modelAttribute="selectFigureForm" action="${selectUrl}" class="form-inline" >
+		<div class="form-group">
 		<form:label path="category" >Catégorie : </form:label>
-		<form:select path="category">
+		<form:select path="category" class="form-control">
 			<form:option value="" label="-----"/>
 			<form:options items="${categoryList}" itemValue="name" itemLabel="name" />
 		</form:select>
-		&nbsp;&nbsp;&nbsp;&nbsp;      
+		</div>
+		&nbsp;&nbsp;&nbsp;&nbsp; 
+		<div class="form-group">     
 		<form:label path="role" >Rôle : </form:label>
-		<form:select path="role">
+		<form:select path="role" class="form-control">
 			<form:option value="" label="-----"/>
 			<form:options items="${roleList}" itemValue="name" itemLabel="name" />
 		</form:select>
-		&nbsp;&nbsp;&nbsp;&nbsp; 
-		<input type="submit" value="Filtrer" />
+		</div>
+		<input type="submit" value="Filtrer" class="btn"/>
 	</form:form>
 	<br />
 
-	<TABLE BORDER="1">
+	<TABLE class="table table-bordered">
 		<TR>
 			<TH>Prénom</TH>
 			<TH>Nom</TH>
@@ -52,11 +66,15 @@
 				<TD>
 					<spring:url value="/figure/${figure.idFigure}/delete" var="deleteUrl" />
 					<spring:url value="/figure/${figure.idFigure}/update" var="updateUrl" />
-					<button onclick="location.href='${updateUrl}'">Mettre à jour</button>
-				  	<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" /> </form:form>
+					<button onclick="location.href='${updateUrl}'" class="btn">Mettre à jour</button>
+				  	<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" class="btn" /> </form:form>
 				 </TD>
 			</TR>
 		</c:forEach>
 	</TABLE>
+	
+	<spring:url value="/figure/add" var="addUrl" />
+	<button onclick="location.href='${addUrl}'" class="btn">Créer un personnage</button>
+</div>
 </body>
 </html>
