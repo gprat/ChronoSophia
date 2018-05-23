@@ -22,34 +22,47 @@ public class ChronologySerializer  extends StdSerializer<Chronology> {
 	@Override
 	public void serialize(Chronology chronology,JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
 		jgen.writeStartObject();
-		jgen.writeStringField("id","chrono"+String.valueOf(chronology.getIdChronology()));
-		jgen.writeStringField("title", chronology.getName());
-		if(chronology.getEvents()!=null&&!chronology.getEvents().isEmpty()){
-			jgen.writeStringField("focus_date",chronology.getEvents().get(0).getDate().toSerializer());
+		jgen.writeObjectFieldStart("title");
+		jgen.writeObjectFieldStart("text");
+		jgen.writeStringField("headline",chronology.getName());
+		jgen.writeStringField("text",chronology.getDescription());
+		jgen.writeEndObject();
+		if(chronology.getUrl()!=null){
+			jgen.writeObjectFieldStart("media");
+			jgen.writeStringField("url",chronology.getUrl());
+			jgen.writeEndObject();
 		}
-		else{
-			jgen.writeStringField("focus_date", "2000-01-01 12:00:00");
-		}
-		jgen.writeStringField("initial_zoom","20");
-		jgen.writeStringField("timezone", "+01:00");
-		jgen.writeNumberField("image_lane_height", 50);
+		jgen.writeEndObject();
 		jgen.writeFieldName("events");
 		jgen.writeStartArray();
 		int i = 1;
 		for(Event e : chronology.getEvents()){
 			jgen.writeStartObject();
-			jgen.writeStringField("id","chrono"+String.valueOf(chronology.getIdChronology())+"_"+String.valueOf(i));	
+			jgen.writeObjectFieldStart("start_date");
+			jgen.writeStringField("year", e.getDate().getYear().toString());
+			jgen.writeStringField("month", e.getDate().getMonth().toString());
+			jgen.writeStringField("day", e.getDate().getDay().toString());
+			jgen.writeEndObject();
+			jgen.writeObjectFieldStart("end_date");
+			jgen.writeStringField("year", e.getDate().getYear().toString());
+			jgen.writeStringField("month", e.getDate().getMonth().toString());
+			jgen.writeStringField("day", e.getDate().getDay().toString());
+			jgen.writeEndObject();
+			jgen.writeObjectFieldStart("text");
+			jgen.writeStringField("headline",e.getName());
+			jgen.writeStringField("text",e.getDescription());
+			jgen.writeEndObject();
+			
+			if(e.getUrl()!=null){
+				jgen.writeObjectFieldStart("media");
+				jgen.writeStringField("url",e.getUrl());
+				jgen.writeStringField("thumbnail",e.getUrl());
+				jgen.writeEndObject();
+			}
+			
+			
+			//jgen.writeStringField("unique_id","chrono"+String.valueOf(chronology.getIdChronology())+"_"+String.valueOf(i));
 			i++;
-			jgen.writeStringField("title", e.getName());
-			jgen.writeStringField("description", e.getDescription());
-			jgen.writeStringField("startdate", e.getDate().toSerializer());
-			jgen.writeStringField("enddate", e.getDate().toSerializer());
-			jgen.writeStringField("date_display", "da");
-			jgen.writeStringField("link", "http://en.wikipedia.org/wiki/JavaScript");
-			jgen.writeNumberField("importance", 50);
-			jgen.writeStringField("icon","square_blue.png");
-			jgen.writeNumberField("high_treshold",50);
-			jgen.writeStringField("modal_type", "full");
 			jgen.writeEndObject();
 		}
 		jgen.writeEndArray();

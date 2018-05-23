@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -41,6 +44,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webapp.site.RoleToUserProfileConverter;
+
+
+
 
 @Configuration
 @EnableWebMvc
@@ -54,6 +61,7 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter
     @Inject ObjectMapper objectMapper;
     @Inject Marshaller marshaller;
     @Inject Unmarshaller unmarshaller;
+    @Autowired RoleToUserProfileConverter roleToUserProfileConverter;
 
     @Override
     public void configureMessageConverters(
@@ -142,5 +150,10 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter
     public MultipartResolver multipartResolver()
     {
         return new StandardServletMultipartResolver();
+    }
+    
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(roleToUserProfileConverter);
     }
 }

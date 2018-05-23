@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -25,20 +26,28 @@
 
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 <div class="container">
 	<h3>Catégories</h3>
 	<TABLE class="table table-bordered">
 		<TR>
 			<TH>Nom</TH>
+			<th>Opérations</th>
 		</TR>
 		<c:forEach items="${categories}" var="category">
 			<TR>
 				<TD><c:out value="${category.name}"></c:out></TD>
+				<td>
+					<spring:url value="/category/${category.idCategory}/delete" var="deleteUrl" />
+					<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" class="btn"/> </form:form>
+				</td>
 			</TR>
 		</c:forEach>
 	</TABLE>
 	<spring:url value="/category/add" var="addUrl" />
-	<button onclick="location.href='${addUrl}'" class="btn">Créer une catégorie</button>
+	<form:form method="post" action="${addUrl}" style="display: inline;"> 
+		<input type="submit" value="Créer une catégorie" class="btn" />
+	</form:form>
 </div>
 </body>
 </html>

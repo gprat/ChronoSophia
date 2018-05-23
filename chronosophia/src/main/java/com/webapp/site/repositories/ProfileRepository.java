@@ -1,9 +1,0 @@
-package com.webapp.site.repositories;
-
-import org.springframework.data.repository.CrudRepository;
-
-import com.webapp.site.entities.Profile;
-
-public interface ProfileRepository extends CrudRepository<Profile,Long> {
-
-}

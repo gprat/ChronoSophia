@@ -9,7 +9,9 @@ import com.webapp.site.entities.Event;
 
 public interface EventRepository extends CrudRepository<Event,Long>, JpaSpecificationExecutor<Event> {
 	
-	List<Event> findDistinctByCategories_IdCategoryIn(List<Long> categories);
+	List<Event> findDistinctByCategories_IdCategoryInAndUser_Login(List<Long> categories,String login);
 	
 	List<Event> findByIdEventIn(List<Long> idEvents);
+	
+	List<Event> findByUser_Login(String login);
 }

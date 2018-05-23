@@ -70,25 +70,31 @@ public class DefaultFigureService implements FigureService {
 		}
 		if(roleList!="") roleList.substring(1,roleList.length()-1);
 		figureForm.roles=roleList;
+		figureForm.biography=figure.getBiography();
+		figureForm.url=figure.getUrl();
 		return figureForm;
 	}
 	
 	@Override
-	public List<Figure> getFiguresByCategoryAndRole(String category,String role){
+	public List<Figure> getFiguresByCategoryAndRole(String category,String role, String login){
 		List<Figure> list = new ArrayList<>();
 		if(category!=""){
 			if(role!=""){
-				this.figureRepository.findByCategories_NameAndRoles_Name(category, role).forEach(e -> list.add(e));
+				this.figureRepository.findByCategories_NameAndRoles_NameAndUser_Login(category, role, login).forEach(e -> list.add(e));
 			}
-			else this.figureRepository.findByCategories_Name(category).forEach(e -> list.add(e));
+			else this.figureRepository.findByCategories_NameAndUser_Login(category, login).forEach(e -> list.add(e));
 		}
 		else{
 			if(role!=""){
-				this.figureRepository.findByRoles_Name(role).forEach(e -> list.add(e));
+				this.figureRepository.findByRoles_NameAndUser_Login(role, login).forEach(e -> list.add(e));
 			}
 			else this.figureRepository.findAll().forEach(e -> list.add(e));
 		}
 		return list;
 	}
-
+	
+	@Override
+	public List<Figure>  getFiguresByLogin(String login){
+		return this.figureRepository.findByUser_Login(login);
+	}
 }

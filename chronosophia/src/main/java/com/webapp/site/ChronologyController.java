@@ -1,14 +1,17 @@
 package com.webapp.site;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,16 +39,16 @@ public class ChronologyController {
 	@Inject UserService userService;
 	@Inject ObjectMapper objectMapper;
 	
-	@RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-	public String list(Map<String, Object> model){
-		model.put("chronologies", chronologyService.getAllChronologies());
+	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
+	public String list(Map<String, Object> model, Principal principal){
+		model.put("chronologies", chronologyService.getChronologiesByLogin(principal.getName()));
 		return "chronology/list";
 	}
 	
-	@RequestMapping(value = {"/{id}/view"}, method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
 	public String view(@PathVariable("id") long id, Model model){
 		try {
-			model.addAttribute("chronologieJSON", objectMapper.writeValueAsString(this.chronologyService.getChronologies(id)));
+			model.addAttribute("chronologieJSON", objectMapper.writeValueAsString(this.chronologyService.getChronology(id)));
 			model.addAttribute("titre",this.chronologyService.getChronology(id).getName());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -54,16 +57,16 @@ public class ChronologyController {
 		return "chronology/view";
 	}
 	
-	@RequestMapping(value="add", method = RequestMethod.GET)
-	public String createChronology(Map<String, Object> model){
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public String createChronology(Map<String, Object> model, Principal principal){
 		ChronologyForm chronologyForm = new ChronologyForm();
 		model.put("chronologyForm", chronologyForm);
 		model.put("selectEventForm",new SelectEventForm());
-		model.put("AvailableEventList", eventService.getAllEvents());
+		model.put("AvailableEventList", eventService.getEventsbyLogin(principal.getName()));
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -71,14 +74,14 @@ public class ChronologyController {
 	}
 	
 	@RequestMapping(value="filter", method = RequestMethod.POST)
-	public String FilterEvents(@ModelAttribute("selectEventForm") SelectEventForm selectEventForm,Map<String, Object> model) {
+	public String FilterEvents(@ModelAttribute("selectEventForm") SelectEventForm selectEventForm,Map<String, Object> model, Principal principal) {
 		ChronologyForm chronologyForm = new ChronologyForm();
 		chronologyForm.eventList=selectEventForm.eventsToExclude;
 		model.put("chronologyForm", chronologyForm);
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -100,14 +103,35 @@ public class ChronologyController {
 			new ArrayList<String>(Arrays.asList(selectEventForm.eventsToExclude.split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
 			model.put("SelectedEventList", eventService.getEventsById(eventListToExclude));
 		}
-		model.put("AvailableEventList", eventService.getEventsFiltered(categoryList, figureList, cityList, eventListToExclude));
+		model.put("AvailableEventList", eventService.getEventsFiltered(categoryList, figureList, cityList, eventListToExclude, principal.getName()));
 		
 		return "chronology/chronologyForm";
 	}
 	
 	
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public View createChronology(ChronologyForm chronologyForm){
+	public String createChronology(@Valid ChronologyForm chronologyForm, BindingResult bindingResult, Map<String, Object> model, Principal principal){
+		if(bindingResult.hasErrors()){
+			model.put("chronologyForm", chronologyForm);
+			model.put("selectEventForm",new SelectEventForm());
+			List<Long> cityList = new ArrayList<>();
+			List<Long> categoryList = new ArrayList<>();
+			List<Long> figureList = new ArrayList<>();
+			List<Long> eventListToExclude = new ArrayList<>();
+			if((chronologyForm.getEventList()!=null&&(chronologyForm.getEventList()!=""))){
+				new ArrayList<String>(Arrays.asList(chronologyForm.getEventList().split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
+				model.put("SelectedEventList", eventService.getEventsById(eventListToExclude));
+			}
+			model.put("AvailableEventList", eventService.getEventsFiltered(categoryList, figureList, cityList,eventListToExclude, principal.getName()));
+			try{
+				model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+				model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return "chronology/chronologyForm";
+		}
 		Chronology chronology;
 		if(chronologyForm.id!=null&&chronologyForm.id!=0){
 			chronology=chronologyService.getChronology(chronologyForm.id);
@@ -121,14 +145,16 @@ public class ChronologyController {
 			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventList.add(eventService.getEvent(Long.parseLong(idEvent))));
 		}
 		chronology.setEvents(eventList);
-		chronology.setUser(this.userService.getUser(1));
+		chronology.setUrl(chronologyForm.url);
+		chronology.setDescription(chronologyForm.description);
+		chronology.setUser(this.userService.findByLogin(principal.getName()));
 		chronology.setCategory(categoryService.getCategory(Long.parseLong(chronologyForm.getCategory())));
 		chronologyService.save(chronology);
-		return new RedirectView("/chronology/list", true, false);
+		return "redirect:list";
 	}
 	
-	@RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
-	public String ShowUpdateChronologyForm(@PathVariable("id") long id, Model model) {
+	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	public String ShowUpdateChronologyForm(@PathVariable("id") long id, Model model, Principal principal) {
 		ChronologyForm chronologyForm = this.chronologyService.getChronologyForm(id);
 		Chronology chronology = this.chronologyService.getChronology(id);
 		model.addAttribute("chronologyForm", chronologyForm);
@@ -138,18 +164,18 @@ public class ChronologyController {
 			new ArrayList<String>(Arrays.asList(chronologyForm.eventList.split(","))).forEach(idEvent->eventListToExclude.add(Long.parseLong(idEvent)));
 			model.addAttribute("SelectedEventList", eventService.getEventsById(eventListToExclude));
 		}
-		model.addAttribute("AvailableEventList", eventService.getEventsFiltered(null, null, null, eventListToExclude));
+		model.addAttribute("AvailableEventList", eventService.getEventsFiltered(null, null, null, eventListToExclude, principal.getName()));
 		try{
-			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return "chronology/chronologyForm";
 	}
 	
-	@RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteChronology(@PathVariable("id") long id){
 		this.chronologyService.delete(id);
 		return new RedirectView("/chronology/list", true, false);

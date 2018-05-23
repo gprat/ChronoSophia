@@ -38,14 +38,15 @@ public class CityController {
 	
 	@Inject CityService cityService;
 	@Inject ObjectMapper objectMapper;
+	@Inject UserService userService;
 	
-	@RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-    public String list(Map<String, Object> model){
-		model.put("cities", this.cityService.getAllCities());
+	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
+    public String list(Map<String, Object> model, Principal principal){
+		model.put("cities", this.cityService.getCitiesByLogin(principal.getName()));
 		return "city/list";
 	}
 	
-    @RequestMapping(value = "add", method = RequestMethod.GET)
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     public String createCity(Map<String, Object> model)
     {
         model.put("cityForm", new CityForm());
@@ -53,7 +54,7 @@ public class CityController {
     }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public View createCity(CityForm form)
+    public View createCity(CityForm form, Principal principal)
     {
     	City city;
     	if(form.getIdCity()==null||form.getIdCity()==0){
@@ -66,13 +67,14 @@ public class CityController {
     	cityService.setCountry(city, form.getCountryname());
     	city.setLatitude(form.getLatitude().setScale(6, RoundingMode.HALF_UP));
     	city.setLongitude(form.getLongitude().setScale(6, RoundingMode.HALF_UP));
+    	city.setUser(this.userService.findByLogin(principal.getName()));
         cityService.save(city);
         return new RedirectView("/city/list", true, false);
     }
     
     @RequestMapping(value = "view", method = RequestMethod.GET)
-    public String view(Map<String,Object> model){
-    	model.put("cities", this.cityService.getAllCities());
+    public String view(Map<String,Object> model, Principal principal){
+    	model.put("cities", this.cityService.getCitiesByLogin(principal.getName()));
     	try {
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
 		} catch (JsonProcessingException e) {
@@ -82,14 +84,14 @@ public class CityController {
     	return "city/view";
     }
     
-    @RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
 	public String ShowUpdateCityForm(@PathVariable("id") long id, Model model) {
 		CityForm cityForm = this.cityService.getCityForm(id);
 		model.addAttribute("cityForm", cityForm);
 		return "city/add";
 	}
     
-    @RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteCity(@PathVariable("id") long id){
 		this.cityService.deleteCity(id);
 		return new RedirectView("/city/list", true, false);

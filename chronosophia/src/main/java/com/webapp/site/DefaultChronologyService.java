@@ -31,11 +31,7 @@ public class DefaultChronologyService implements ChronologyService {
 	public Chronology getChronology(long id){
 		return chronologyRepository.findOne(id);
 	}
-	
-	@Override
-	public List<Chronology> getChronologies(long id){
-		return chronologyRepository.findByIdChronology(id);
-	}
+
 	
 	@Override
 	public void save(Chronology chronology){
@@ -61,8 +57,15 @@ public class DefaultChronologyService implements ChronologyService {
 			chronologyForm.category=String.valueOf(chronology.getCategory().getIdCategory());
 			chronologyForm.id=chronology.getIdChronology();
 			chronologyForm.name=chronology.getName();
+			chronologyForm.description=chronology.getDescription();
+			chronologyForm.url=chronology.getUrl();
 		}
 		return chronologyForm;
 	}
 
+	
+	@Override
+	public List<Chronology> getChronologiesByLogin(String login){
+		return chronologyRepository.findByUser_Login(login);
+	}
 }

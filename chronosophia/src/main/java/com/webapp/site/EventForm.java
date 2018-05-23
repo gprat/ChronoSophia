@@ -2,27 +2,44 @@ package com.webapp.site;
 
 import java.util.List;
 
+import javax.validation.constraints.*;
+
 public class EventForm {
 
 	Long id;
 	
+	@NotNull
 	String name;
 	
 	String idCity;
 	
 	String country;
 	
+	@Max(31)
 	Integer day;
 	
+	@Max(12)
 	Integer month;
 	
+	@NotNull
 	Integer year;
 	
 	String categories;
 
+	@NotNull
 	String description;
 	
 	String figures;
+	
+	String url;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public String getFigures() {
 		return figures;

@@ -7,7 +7,7 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKEJD4clumNiWGYa0nShr6KETRUbdNwSE"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2NOLXK45QWyN41-tNDdzb35EqpXGS0nQ"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Cities</title>
 </head>

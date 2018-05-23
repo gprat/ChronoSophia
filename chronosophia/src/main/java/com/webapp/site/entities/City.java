@@ -50,6 +50,11 @@ public class City implements Serializable {
 	//bi-directional many-to-one association to Monument
 	@OneToMany(mappedBy="city")
 	private List<Monument> monuments;
+	
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="idUser")
+	private User user;
 
 	public City() {
 	}
@@ -92,6 +97,15 @@ public class City implements Serializable {
 
 	public void setCountry(Country country) {
 		this.country = country;
+	}
+
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@JsonIgnore

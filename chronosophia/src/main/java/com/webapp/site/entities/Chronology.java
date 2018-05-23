@@ -26,6 +26,27 @@ public class Chronology implements Serializable {
 	private Long idChronology;
 
 	private String name;
+	
+	private String url;
+	
+	@Lob
+	private String description;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	//bi-directional many-to-one association to Category
 	@ManyToOne

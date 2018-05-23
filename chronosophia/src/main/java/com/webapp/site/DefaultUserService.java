@@ -37,5 +37,21 @@ public class DefaultUserService implements UserService {
 	public void delete(long id) {
 		this.userRepository.delete(id);
 	}
+	
+	@Override
+	public User findByLogin(String login){
+		return this.userRepository.findOneByLogin(login);
+	}
+	
+	@Override
+	public void deleteUserByLogin(String login){
+		this.userRepository.delete(this.userRepository.findOneByLogin(login));
+	}
+	
+	@Override
+	public boolean isUserLoginUnique(Long id, String login) {
+        User user = findByLogin(login);
+        return ( user == null || ((id != null) && (user.getIdUser() == id)));
+    }
 
 }

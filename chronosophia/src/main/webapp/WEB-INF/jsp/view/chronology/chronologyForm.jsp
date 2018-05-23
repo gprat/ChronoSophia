@@ -12,12 +12,13 @@
 <spring:url value="/resources/js/jquery-ui.js" var="jqueryJs" />
 <spring:url value="/resources/js/fieldChooser.js" var="fieldChooserJs" />
 <!-- Latest compiled JavaScript -->
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 
 <!-- jQuery library -->
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+	<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -37,7 +38,8 @@
 <link rel="stylesheet" type="text/css" href="${jqueryCss}" />
 <link rel="stylesheet" type="text/css" href="${styleCss}" />
 
-<script src="${jqueryJs}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
 <script src="${fieldChooserJs}"></script>
 
 <title>Ajouter une chronologie</title>
@@ -83,17 +85,33 @@
 		
 		<div class="col-xs-12" style="height:40px;"></div>
 		
-		<form:form method="post" modelAttribute="chronologyForm" class="form-inline"
+		<form:form method="post" modelAttribute="chronologyForm" class="form-horizontal"
 			action="${chronologyActionUrl}">
 			<form:hidden path="eventList" id="selectedEventList" />
 			<form:hidden path="id" />
 			<div class="form-group">
-				<label>Nom de la chronologie : </label>
+				<label class="control-label col-md-3 col-sm-4">Nom de la chronologie : </label>
+					<div class="col-sm-7">
 					<form:input path="name" class="form-control" placeholder="Nom" />
+					</div>
 			</div>
 			<div class="form-group">
-				<label>Catégorie : </label>
+				<label class="control-label col-md-3 col-sm-4">Description de la chronologie : </label>
+				<div class="col-sm-7">
+					<form:textarea path="description" class="form-control" placeholder="Description" rows="8" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Url de l'image : </label>
+				<div class="col-sm-7">
+					<form:input path="url" class="form-control" placeholder="Url" />
+					</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Catégorie : </label>
+				<div class="col-sm-7">
 					<form:input path="category" class="category form-control" placeholder="Catégories" data-min-length='0'/>
+				</div>
 			</div>
 			<input type="submit" value="Sauver" class="btn btn-default" /> 
 			<input type="reset" value="Reinitialiser" class="btn btn-default" />

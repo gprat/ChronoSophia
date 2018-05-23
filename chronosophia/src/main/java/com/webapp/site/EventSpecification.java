@@ -35,7 +35,6 @@ public class EventSpecification implements Specification<Event>{
 			Join categoryJoin = root.join("categories");
 			Path<Integer> idCategory = categoryJoin.get("idCategory");
 			predicates.add(idCategory.in(criteria.getCategories()));
-			System.out.println(criteria.getCategories());
 		}
 		if(criteria.getFigures()!=null&&criteria.getFigures().size()>0){
 			Join figureJoin = root.join("figures");
@@ -50,6 +49,11 @@ public class EventSpecification implements Specification<Event>{
 			Path<Integer> idEvent = root.get("idEvent");
 			predicates.add(idEvent.in(criteria.getEventsToExclude()).not());
 		}
+		if(criteria.getLogin()!=null&&criteria.getLogin()!=""){
+			Join userJoin = root.join("user");
+			Path<String> login = userJoin.get("login");
+			predicates.add(login.in(criteria.getLogin()));
+ 		}
 		query.distinct(true);
 		return cb.and(predicates.toArray(new Predicate[predicates.size()]));
 	}

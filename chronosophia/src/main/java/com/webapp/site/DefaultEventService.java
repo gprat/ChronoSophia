@@ -44,6 +44,7 @@ public class DefaultEventService implements EventService {
 			eventForm.year=event.getDate().getYear();
 		}
 		eventForm.name=event.getName();
+		eventForm.url=event.getUrl();
 		eventForm.description=event.getDescription();
 		if(event.getCity()!=null){
 			eventForm.idCity=String.valueOf(event.getCity().getIdCity());
@@ -74,10 +75,10 @@ public class DefaultEventService implements EventService {
 	}
 	
 	@Override
-	public List<Event> getEventsByCategory(List<Long> categories){
+	public List<Event> getEventsByCategory(List<Long> categories, String login){
 		List<Event> list = new ArrayList<>();
 		if(categories.size()>0){
-			this.eventRepository.findDistinctByCategories_IdCategoryIn(categories).forEach(e->list.add(e));
+			this.eventRepository.findDistinctByCategories_IdCategoryInAndUser_Login(categories, login).forEach(e->list.add(e));
 		}
 		else{
 			this.eventRepository.findAll().forEach(e->list.add(e));
@@ -86,13 +87,14 @@ public class DefaultEventService implements EventService {
 	}
 	
 	@Override
-	public List<Event> getEventsFiltered(List<Long> categories, List <Long> figures,List <Long> cities, List<Long> events){
+	public List<Event> getEventsFiltered(List<Long> categories, List <Long> figures,List <Long> cities, List<Long> events, String login){
 		List<Event> list = new ArrayList<>();
 		EventFilter ef = new EventFilter();
 		ef.setCategories(categories);
 		ef.setEventsToExclude(events);;
 		ef.setFigures(figures);
 		ef.setCities(cities);
+		ef.setLogin(login);
 		this.eventRepository.findAll(new EventSpecification(ef)).forEach(e->list.add(e));
 		return list;
 	}
@@ -102,6 +104,11 @@ public class DefaultEventService implements EventService {
 		List<Event> list = new ArrayList<>();
 		this.eventRepository.findByIdEventIn(IdEvents).forEach(e->list.add(e));
 		return list;
+	}
+	
+	@Override
+	public List<Event> getEventsbyLogin(String login){
+		return this.eventRepository.findByUser_Login(login);
 	}
 	
 }

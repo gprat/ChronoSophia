@@ -14,6 +14,7 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -56,6 +57,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 @Configuration
+@Import({SecurityConfiguration.class})
 @EnableJpaRepositories(
         basePackages = "com.webapp.site.repositories"
 )

@@ -46,30 +46,30 @@ public class FigureController {
 	@Inject ObjectMapper objectMapper;
 	
 	
-	@RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-    public String list(Map<String, Object> model){
+	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
+    public String list(Map<String, Object> model, Principal principal){
 		model.put("selectFigureForm",new SelectFigureForm());
-		model.put("figures",this.figureService.getAllFigures() );
-		model.put("categoryList", this.categoryService.getAllCategories());
-		model.put("roleList", this.roleService.getAllRoles());
+		model.put("figures",this.figureService.getFiguresByLogin(principal.getName()));
+		model.put("categoryList", this.categoryService.getCategoriesByLogin(principal.getName()));
+		model.put("roleList", this.roleService.getRolesByLogin(principal.getName()));
 		return "figure/list";
 	}
 	
 	@RequestMapping(value = "list",method = RequestMethod.POST)
-	public String list(@ModelAttribute("selectFigureForm") SelectFigureForm selectFigureForm,Map<String, Object> model ){
+	public String list(@ModelAttribute("selectFigureForm") SelectFigureForm selectFigureForm,Map<String, Object> model, Principal principal ){
 		model.put("selectFigureForm",new SelectFigureForm());
-		model.put("figures",this.figureService.getFiguresByCategoryAndRole(selectFigureForm.category, selectFigureForm.role));
-		model.put("categoryList", this.categoryService.getAllCategories());
-		model.put("roleList", this.roleService.getAllRoles());
+		model.put("figures",this.figureService.getFiguresByCategoryAndRole(selectFigureForm.category, selectFigureForm.role, principal.getName()));
+		model.put("categoryList", this.categoryService.getCategoriesByLogin(principal.getName()));
+		model.put("roleList", this.roleService.getRolesByLogin(principal.getName()));
 		return "figure/list";
 	}
 	
-	@RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
-	public String showUpdateFigureForm(@PathVariable("id") long id, Model model) {
+	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	public String showUpdateFigureForm(@PathVariable("id") long id, Model model, Principal principal) {
 		FigureForm figureForm = this.figureService.getFigureForm(id);
 		try{
-			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.addAttribute("rolesJSON", objectMapper.writeValueAsString(this.roleService.getAllRoles()));
+			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.addAttribute("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -78,12 +78,12 @@ public class FigureController {
 
 	}
 	
-	@RequestMapping(value = "add", method = RequestMethod.GET)
-	public String createFigure(Map<String, Object> model){
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public String createFigure(Map<String, Object> model, Principal principal){
 		 model.put("figureForm", new FigureForm());
 		 try{
-				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-				model.put("rolesJSON", objectMapper.writeValueAsString(this.roleService.getAllRoles()));
+				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+				model.put("rolesJSON", objectMapper.writeValueAsString(this.roleService.getRolesByLogin(principal.getName())));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
@@ -91,7 +91,7 @@ public class FigureController {
 	}
 	
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public View createFigure(FigureForm form){
+	public View createFigure(FigureForm form, Principal principal){
 		Figure figure;
 		if(form.id!=null && form.id!=0){
 			figure = this.figureService.getFigure(form.id);
@@ -104,7 +104,7 @@ public class FigureController {
 		figure.setLastName(form.lastName);
 		figure.setBirthDate(this.dateService.setDate(form.dayOfBirth, form.monthOfBirth, form.yearOfBirth));
 		figure.setDeathDate(this.dateService.setDate(form.dayOfDeath, form.monthOfDeath, form.yearOfDeath));
-		figure.setUser(this.userService.getUser(1));
+		figure.setUser(this.userService.findByLogin(principal.getName()));
 		if(form.categories!=null){
 			new ArrayList<String>(Arrays.asList(form.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory))));
 		}
@@ -113,13 +113,26 @@ public class FigureController {
 		}
 		figure.setCategories(categoryList);
 		figure.setRoles(roleList);
+		figure.setBiography(form.biography);
+		figure.setUrl(form.url);
 		this.figureService.save(figure);
 		return new RedirectView("/figure/list", true, false);
 	}
 	
-	@RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteFigure(@PathVariable("id") long id){
 		this.figureService.delete(id);
 		return new RedirectView("/figure/list", true, false);
+	}
+	
+	@RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
+	public String view(@PathVariable("id") long id, Model model){
+		model.addAttribute("figure", figureService.getFigure(id));
+		try{
+			model.addAttribute("figureJSON", objectMapper.writeValueAsString(this.figureService.getFigure(id)));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return "figure/view";
 	}
 }

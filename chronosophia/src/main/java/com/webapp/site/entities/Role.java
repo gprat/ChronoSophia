@@ -23,9 +23,14 @@ public class Role implements Serializable {
 	@Id
 	@JsonSerialize(using = ToStringSerializer.class)
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idRole;
+	private Long idRole;
 	
 	private String name;
+	
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="idUser")
+	private User user;
 
 	//bi-directional many-to-many association to Figure
 	@ManyToMany(mappedBy="roles")
@@ -34,11 +39,11 @@ public class Role implements Serializable {
 	public Role() {
 	}
 
-	public int getIdRole() {
+	public Long getIdRole() {
 		return this.idRole;
 	}
 
-	public void setIdRole(int idRole) {
+	public void setIdRole(Long idRole) {
 		this.idRole = idRole;
 	}
 
@@ -57,6 +62,15 @@ public class Role implements Serializable {
 
 	public void setFigures(List<Figure> figures) {
 		this.figures = figures;
+	}
+	
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

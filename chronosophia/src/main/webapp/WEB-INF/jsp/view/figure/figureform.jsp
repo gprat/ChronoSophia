@@ -116,6 +116,18 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Biographie: </label>
+				<div class="col-sm-7">
+					<form:textarea path="biography" class="form-control" placeholder="Biographie" rows="8" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Url de l'image : </label>
+				<div class="col-sm-7">
+					<form:input path="url" class="form-control" placeholder="Url" />
+					</div>
+			</div>
+			<div class="form-group">
 				<div class="col-sm-offset-3 col-sm-9">
 					<input type="submit" value="Sauver" /> <input type="reset"
 						value="Reinitialiser" />

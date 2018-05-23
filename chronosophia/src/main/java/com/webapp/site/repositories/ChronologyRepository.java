@@ -8,5 +8,5 @@ import com.webapp.site.entities.Chronology;
 
 public interface ChronologyRepository extends CrudRepository<Chronology,Long>{
 
-	List<Chronology> findByIdChronology(Long idChronology);
+	List<Chronology> findByUser_Login(String login);
 }

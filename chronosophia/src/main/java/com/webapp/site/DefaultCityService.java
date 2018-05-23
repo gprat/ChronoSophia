@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 
 import com.webapp.site.entities.City;
@@ -40,6 +41,7 @@ public class DefaultCityService implements CityService {
 		this.cityRepository.delete(id);
 	}
 	
+	@Override
 	public void setCountry(City city,String countryname){
 		Country country = countryRepository.getOneByName(countryname);
 		if (country == null) {
@@ -51,6 +53,7 @@ public class DefaultCityService implements CityService {
 		city.setCountry(country);
 	}
 	
+	@Override
 	public CityForm getCityForm(long id){
 		City city = getCity(id);
 		CityForm form = new CityForm();
@@ -60,6 +63,11 @@ public class DefaultCityService implements CityService {
 		form.setLatitude(city.getLatitude());
 		form.setLongitude(city.getLongitude());
 		return form;
+	}
+	
+	@Override
+	public List<City> getCitiesByLogin(String login){
+		return this.cityRepository.findByUser_Login(login);
 	}
 
 }

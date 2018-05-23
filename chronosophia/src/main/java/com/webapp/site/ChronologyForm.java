@@ -1,14 +1,42 @@
 package com.webapp.site;
 
+import javax.validation.constraints.*;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ChronologyForm {
 
+	
+	@NotEmpty
 	String name;
 	
 	Long id;
 	
 	String category;
 	
+	@NotEmpty
 	String eventList;
+	
+	@NotEmpty
+	String description;
+	
+	String url;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public String getName() {
 		return name;

@@ -42,6 +42,11 @@ public class Category implements Serializable {
 	//bi-directional many-to-many association to Figure
 	@ManyToMany(mappedBy="categories")
 	private List<Figure> figures;
+	
+	//bi-directional many-to-one association to User
+	@ManyToOne
+	@JoinColumn(name="idUser")
+	private User user;
 
 	public Category() {
 	}
@@ -126,4 +131,14 @@ public class Category implements Serializable {
 		this.figures = figures;
 	}
 
+	@JsonIgnore
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	
 }

@@ -11,13 +11,15 @@ public interface FigureService {
 
 	List<Figure> getAllFigures();
 	
+	List<Figure> getFiguresByLogin(String login);
+	
 	Figure getFigure(long id);
 	
 	void save(Figure figure);
 	
 	void delete(long id);
 	
-	List<Figure> getFiguresByCategoryAndRole(String category,String role);
+	List<Figure> getFiguresByCategoryAndRole(String category,String role, String login);
 
 	FigureForm getFigureForm(Long id);
 }

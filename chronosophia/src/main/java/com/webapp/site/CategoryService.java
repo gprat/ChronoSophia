@@ -19,4 +19,5 @@ public interface CategoryService {
 	
 	Category getCategory(String name);
 
+	List<Category> getCategoriesByLogin(String login);
 }

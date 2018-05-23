@@ -14,8 +14,8 @@ public interface ChronologyService {
 
 	void delete(long id);
 	
-	List<Chronology> getChronologies(long id);
-	
 	ChronologyForm getChronologyForm(long id);
+	
+	List<Chronology> getChronologiesByLogin(String login);
 
 }

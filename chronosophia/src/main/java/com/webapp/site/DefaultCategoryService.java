@@ -42,5 +42,10 @@ public class DefaultCategoryService implements CategoryService {
 	public Category getCategory(String name){
 		return categorieRepository.getOneByName(name);
 	}
+	
+	@Override
+	public List<Category> getCategoriesByLogin(String login){
+		return categorieRepository.findByUser_Login(login);
+	}
 
 }

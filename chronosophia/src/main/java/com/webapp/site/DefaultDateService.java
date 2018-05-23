@@ -60,7 +60,7 @@ public class DefaultDateService implements DateService {
 		if(month==null||month==0){
 			date=this.dateRepository.getOneByYearAndMonthIsNull(year);
 		}
-		else if(day==null|day==0){
+		else if(day==null||day==0){
 			date=this.dateRepository.getOneByMonthAndYearAndDayIsNull(month, year);
 		}
 		else{date=this.dateRepository.getOneByDayAndMonthAndYear(day, month, year);}

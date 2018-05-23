@@ -8,35 +8,71 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKEJD4clumNiWGYa0nShr6KETRUbdNwSE&signed_in=true&libraries=places&callback=initAutocomplete"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2NOLXK45QWyN41-tNDdzb35EqpXGS0nQ&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
         async defer></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ajouter une ville</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<spring:url value="/resources/css/style.css" var="styleCss" />
+<spring:url value="/resources/css/normalize.css" var="normalizeCss" />
+	<link href="${styleCss}" rel="stylesheet" /> 
+<link href="${normalizeCss}" rel="stylesheet">
 </head>
 <body>
+<div class="container">
+<div class="col-sm-offset-1 col-sm-9">
  <h1>Ajouter une ville</h1>
+</div>
  <spring:url value="/city/save" var="cityActionUrl" />
-	<form:form method="post" modelAttribute="cityForm" action="${cityActionUrl}">
-		<div id="locationField">
+	<form:form method="post" modelAttribute="cityForm" action="${cityActionUrl}" class="form-horizontal">
+		<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-7">
+			<div id="locationField">
 			<input id="autocomplete" placeholder="Enter your address"
-				onFocus="geolocate()" type="text"></input>
+				onFocus="geolocate()" type="text"  class="form-control"></input>
+		</div>
+		</div>
 		</div>
 		<form:hidden path="idCity" />
-		<form:label path="cityname" >Nom de la ville : </form:label>
-		<form:input path="cityname" id="locality"/>
-		<br />
-		<form:label path="countryname" >Nom du pays : </form:label>
-		<form:input path="countryname" id="country"/>
-		<br />
-		<form:label path="longitude" >Longitude : </form:label>
-		<form:input path="longitude" id="longitude"/>
-		<br />
-		<form:label path="latitude" >Latitude : </form:label>
-		<form:input path="latitude" id="latitude"/>
-		<br />
-
-		<input type="submit" value="Sauver" />
-		<input type="reset" value="Réinitialiser" />
+		<div class="form-group">
+		<label class="control-label col-md-3 col-sm-4" >Nom de la ville : </label>
+		<div class="col-sm-7">
+		<form:input path="cityname" id="locality" class="form-control"/>
+		</div>
+		</div>
+		<div class="form-group">
+		<label  class="control-label col-md-3 col-sm-4">Nom du pays : </label>
+		<div class="col-sm-7">
+		<form:input path="countryname" id="country"  class="form-control"/>
+		</div>
+		</div>
+		<div class="form-group">
+		<label  class="control-label col-md-3 col-sm-4">Longitude : </label>
+		<div class="col-sm-7">
+		<form:input path="longitude" id="longitude"  class="form-control"/>
+		</div>
+		</div>
+		<div class="form-group">
+		<label class="control-label col-md-3 col-sm-4">Latitude : </label>
+		<div class="col-sm-7">
+		<form:input path="latitude" id="latitude"  class="form-control"/>
+		</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-8">
+				<input type="submit" value="Sauver" />
+				<input type="reset" value="Réinitialiser" />
+			</div>
+		</div>
 	</form:form>
 
 	<script>
@@ -108,6 +144,6 @@
 		}
 		// [END region_geolocation]
 	</script>
-
+</div>
 </body>
 </html>

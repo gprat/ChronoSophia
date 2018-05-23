@@ -99,6 +99,13 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Url de
+					l'image : </label>
+				<div class="col-sm-7">
+					<form:input path="url" class="form-control" rows="8" placeholder="Url"/>
+				</div>
+			</div>
+			<div class="form-group">
 				<div class="col-sm-offset-4 col-sm-8">
 					<input type="submit" value="Sauver" /> <input type="reset"
 						value="Reinitialiser" />

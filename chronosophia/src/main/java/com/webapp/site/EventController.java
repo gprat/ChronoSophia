@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,14 +51,14 @@ public class EventController {
 	@Inject CityService cityService;
 	@Inject ObjectMapper objectMapper;
 	
-	@RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-    public String list(Map<String, Object> model){
+	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
+    public String list(Map<String, Object> model, Principal principal){
 		model.put("selectEventForm",new SelectEventForm());
-		model.put("events",this.eventService.getAllEvents() );
+		model.put("events",this.eventService.getEventsbyLogin(principal.getName()) );
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -65,43 +66,43 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "list",method = RequestMethod.POST)
-	public String list(@ModelAttribute("selectEventForm") SelectEventForm selectEventForm,Map<String, Object> model ){
+	public String list(@ModelAttribute("selectEventForm") SelectEventForm selectEventForm,Map<String, Object> model, Principal principal ){
 		model.put("selectEventForm",new SelectEventForm());
 		List<Long> categoryList = new ArrayList<>();
 		if(selectEventForm.categories!=null&&selectEventForm.categories!=""){
 			new ArrayList<String>(Arrays.asList(selectEventForm.categories.split(","))).forEach(idCategory->categoryList.add(Long.parseLong(idCategory)));
 		}
-		model.put("events",this.eventService.getEventsByCategory(categoryList));
+		model.put("events",this.eventService.getEventsByCategory(categoryList, principal.getName()));
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return "event/list";
 	}
 	
-	@RequestMapping(value = "/{id}/update", method = RequestMethod.GET)
-	public String ShowUpdateEventForm(@PathVariable("id") long id, Model model) {
+	@RequestMapping(value = "/{id}", params ="update", method = RequestMethod.POST)
+	public String ShowUpdateEventForm(@PathVariable("id") long id, Model model, Principal principal) {
 		EventForm eventForm = this.eventService.getEventForm(id);
 		model.addAttribute("eventForm", eventForm);
 		try{
-			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
-			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
-			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+			model.addAttribute("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+			model.addAttribute("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+			model.addAttribute("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return "event/eventform";
 	}
 	
-	@RequestMapping(value = "add", method = RequestMethod.GET)
-	public String createEvent(Map<String, Object> model){
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public String createEvent(Map<String, Object> model, Principal principal){
 		EventForm eventForm = new EventForm();
 		model.put("eventForm", eventForm);
 		try{
-			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getAllFigures()));
+			model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
 			model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getAllCategories()));
 			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
 		} catch (JsonProcessingException e) {
@@ -111,7 +112,18 @@ public class EventController {
 	}
 	
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public View createEvent(EventForm eventForm){
+	public String createEvent(@Valid EventForm eventForm, BindingResult bindingResult, Map<String, Object> model, Principal principal){
+		if(bindingResult.hasErrors()){
+			model.put("eventForm", eventForm);
+			try{
+				model.put("figuresJSON", objectMapper.writeValueAsString(this.figureService.getFiguresByLogin(principal.getName())));
+				model.put("categoriesJSON", objectMapper.writeValueAsString(this.categoryService.getCategoriesByLogin(principal.getName())));
+				model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			return "event/eventform";
+		}
 		Event event;
 		if(eventForm.id!=null&&eventForm.id!=0){
 			event=this.eventService.getEvent(eventForm.id);
@@ -122,25 +134,28 @@ public class EventController {
 		List<Category> categoryList = new ArrayList<>();
 		List<Figure> figureList = new ArrayList<>();
 		event.setName(eventForm.name);
+		event.setUrl(eventForm.getUrl());
 		event.setDate(this.dateService.setDate(eventForm.day, eventForm.month, eventForm.year));
 		event.setDescription(eventForm.description);
-		event.setUser(this.userService.getUser(1));
-		if(eventForm.categories!=null){
+		event.setUser(this.userService.findByLogin(principal.getName()));
+		if(eventForm.categories!=null&&eventForm.categories!=""){
 			new ArrayList<String>(Arrays.asList(eventForm.categories.split(","))).forEach(idCategory->categoryList.add(categoryService.getCategory(Long.parseLong(idCategory))));
 		}
-		if(eventForm.figures!=null) {
+		if(eventForm.figures!=null&&eventForm.figures!="") {
 			new ArrayList<String>(Arrays.asList(eventForm.figures.split(","))).forEach(idFigure->figureList.add(figureService.getFigure(Long.parseLong(idFigure))));
 		}
 		event.setCategories(categoryList);
 		event.setFigures(figureList);
-		event.setCity(this.cityService.getCity(Long.parseLong(eventForm.idCity)));
+		if(eventForm.idCity!=null&&eventForm.idCity!=""){
+			event.setCity(this.cityService.getCity(Long.parseLong(eventForm.idCity)));
+		}
 		this.eventService.save(event);
 		
-		return new RedirectView("/event/list", true, false);
+		return "redirect:list";
 	}
 	
 	
-	@RequestMapping(value = "{id}/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}", params ="delete", method = RequestMethod.POST)
 	public View deleteEvent(@PathVariable("id") long id){
 		this.eventService.delete(id);
 		return new RedirectView("/event/list", true, false);

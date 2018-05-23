@@ -31,4 +31,6 @@ public interface CityService {
 	void setCountry(City city,String countryname);
 	
 	CityForm getCityForm(long id);
+	
+	List<City> getCitiesByLogin(String login);
 }

@@ -26,6 +26,10 @@ public class FigureForm {
 	
 	String roles;
 	
+	String url;
+	
+	String biography;
+	
 	public Long getId() {
 		return id;
 	}
@@ -112,6 +116,22 @@ public class FigureForm {
 
 	public void setRoles(String roles) {
 		this.roles = roles;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getBiography() {
+		return biography;
+	}
+
+	public void setBiography(String biography) {
+		this.biography = biography;
 	}
 
 	

@@ -16,12 +16,14 @@ public interface EventService {
 
 	List<Event> getAllEvents();
 
-	List<Event> getEventsByCategory(List<Long> categories);
+	List<Event> getEventsByCategory(List<Long> categories, String login);
 
 	EventForm getEventForm(Long id);
 
-	List<Event> getEventsFiltered(List<Long> categories, List <Long> figures, List <Long> cities, List<Long> events);
+	List<Event> getEventsFiltered(List<Long> categories, List <Long> figures, List <Long> cities, List<Long> events, String login);
 
 	List<Event> getEventsById(List<Long> IdEvents);
+	
+	List<Event> getEventsbyLogin(String login);
 
 }

@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -25,6 +26,7 @@
 
 </head>
 <body>
+<%@ include file="../navbar.jsp" %>
 <div class="container">
 	<p>Villes</p>
 	<TABLE class="table table-bordered">
@@ -38,16 +40,20 @@
 				<TD><c:out value="${city.name }"></c:out></TD>
 				<TD><c:out value="${city.country.name }"></c:out></TD>
 				<TD>
-					<spring:url value="/city/${city.idCity}/delete" var="deleteUrl" />
-					<spring:url value="/city/${city.idCity}/update" var="updateUrl" />
-					<button onclick="location.href='${updateUrl}'">Mettre à jour</button>
-				  	<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" /> </form:form>
+					<spring:url value="/city/${city.idCity}" var="cityUrl" />
+				  	<form:form method="post" action="${cityUrl}" style="display: inline;"> 
+				  	<!--<input type="submit" value="Afficher" name="view" class="btn" />  -->
+				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 
+				  	<input type="submit" value="Supprimer" name="delete" class="btn" />
+				  	</form:form>
 				 </TD>
 			</TR>
 		</c:forEach>
 	</TABLE>
 	<spring:url value="/city/add" var="addUrl" />
-	<button onclick="location.href='${addUrl}'" class="btn">Créer une ville</button>
+	<form:form method="post" action="${addUrl}" style="display: inline;"> 
+		<input type="submit" value="Créer une ville" class="btn" />
+	</form:form>
 </div>
 </body>
 </html>

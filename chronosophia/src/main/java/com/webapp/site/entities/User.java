@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -20,9 +22,15 @@ public class User implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idUser;
 
-	private String login;
-
 	private String password;
+	
+    private String login;
+    
+    private String firstName;
+ 
+    private String lastName;
+ 
+    private String email;
 	
 	//bi-directional many-to-one association to Event
 		@OneToMany(mappedBy="user")
@@ -43,11 +51,21 @@ public class User implements Serializable {
 	//bi-directional many-to-one association to Chronology
 	@OneToMany(mappedBy="user")
 	private List<Chronology> chronologies;
+	
+	@OneToMany(mappedBy="user")
+	private List<City> cities;
+	
+	@OneToMany(mappedBy="user")
+	private List<Category> categories;
+	
+	@OneToMany(mappedBy="user")
+	private List<Role> roles;
 
-	//bi-directional many-to-one association to Profile
-	@ManyToOne
-	@JoinColumn(name="idProfile")
-	private Profile profile;
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_USERPROFILE", 
+             joinColumns = { @JoinColumn(name = "idUser") }, 
+             inverseJoinColumns = { @JoinColumn(name = "idProfile") })
+    private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 
 	public User() {
 	}
@@ -60,13 +78,6 @@ public class User implements Serializable {
 		this.idUser = idUser;
 	}
 
-	public String getLogin() {
-		return this.login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
 
 	public String getPassword() {
 		return this.password;
@@ -120,13 +131,6 @@ public class User implements Serializable {
 		return chronology;
 	}
 
-	public Profile getProfile() {
-		return this.profile;
-	}
-
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
 
 	public List<Event> getEvents() {
 		return events;
@@ -194,4 +198,100 @@ public class User implements Serializable {
 		return figure;
 	}
 	
+	public String getLogin() {
+        return login;
+    }
+ 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+    
+    public String getFirstName() {
+        return firstName;
+    }
+ 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+ 
+    public String getLastName() {
+        return lastName;
+    }
+ 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+ 
+    public String getEmail() {
+        return email;
+    }
+ 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+ 
+    public Set<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+ 
+    public void setUserProfiles(Set<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+    }
+    
+    
+ 
+    public List<City> getCities() {
+		return cities;
+	}
+
+	public void setCities(List<City> cities) {
+		this.cities = cities;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+	@Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((idUser == null) ? 0 : idUser.hashCode());
+        result = prime * result + ((login == null) ? 0 : login.hashCode());
+        return result;
+    }
+ 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof User))
+            return false;
+        User other = (User) obj;
+        if (idUser == null) {
+            if (other.idUser != null)
+                return false;
+        } else if (!idUser.equals(other.idUser))
+            return false;
+        if (login == null) {
+            if (other.login != null)
+                return false;
+        } else if (!login.equals(other.login))
+            return false;
+        return true;
+    }
 }

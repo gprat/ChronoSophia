@@ -41,5 +41,10 @@ public class DefaultRoleService implements RoleService {
 	public Role getRole(String name){
 		return roleRepository.getOneByName(name);
 	}
+	
+	@Override
+	public List<Role> getRolesByLogin(String login){
+		return this.roleRepository.findByUser_Login(login);
+	}
 
 }

@@ -8,6 +8,7 @@ public class EventFilter {
 	private List<Long> categories;
 	private List<Long> cities;
 	private List<Long> eventsToExclude;
+	private String login;
 	
 	public List<Long> getFigures() {
 		return figures;
@@ -33,6 +34,10 @@ public class EventFilter {
 	public void setEventsToExclude(List<Long> eventsToExclude) {
 		this.eventsToExclude = eventsToExclude;
 	}
-	
-	
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
+	}
 }
