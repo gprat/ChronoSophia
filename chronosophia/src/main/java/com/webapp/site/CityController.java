@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class CityController {
 	@RequestMapping(value = {"list"}, method = RequestMethod.GET)
     public String list(Map<String, Object> model, Principal principal){
 		model.put("cities", this.cityService.getCitiesByLogin(principal.getName()));
+		model.put("eventsSpan", new EventsSpan());
 		return "city/list";
 	}
 	
@@ -68,15 +70,32 @@ public class CityController {
     	city.setLatitude(form.getLatitude().setScale(6, RoundingMode.HALF_UP));
     	city.setLongitude(form.getLongitude().setScale(6, RoundingMode.HALF_UP));
     	city.setUser(this.userService.findByLogin(principal.getName()));
+    	city.setDescription(form.getDescription());
         cityService.save(city);
         return new RedirectView("/city/list", true, false);
     }
     
-    @RequestMapping(value = "view", method = RequestMethod.GET)
-    public String view(Map<String,Object> model, Principal principal){
-    	model.put("cities", this.cityService.getCitiesByLogin(principal.getName()));
+    @RequestMapping(value = "view", method = RequestMethod.POST)
+    public String view(Map<String,Object> model, Principal principal, EventsSpan eventsSpan){
+    	int startYear=-2000;
+    	int endYear =  Calendar.getInstance().get(Calendar.YEAR);
+    	if(eventsSpan.getStartYear()!=null) {
+    		startYear=eventsSpan.getStartYear();
+    	}
+    	if(eventsSpan.getEndYear()!=null) {
+    		endYear= eventsSpan.getEndYear();
+    	}
+    	
     	try {
-			model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getAllCities()));
+    		if(eventsSpan.getStartYear()==null && eventsSpan.getEndYear()==null) {
+    			model.put("cities", this.cityService.getCitiesByLogin(principal.getName()));
+        		model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByLogin(principal.getName())));
+        	}
+        	else {
+        		model.put("cities", this.cityService.getCitiesByEventYear(principal.getName(), startYear,endYear));
+        		model.put("citiesJSON", objectMapper.writeValueAsString(this.cityService.getCitiesByEventYear(principal.getName(), startYear, endYear)));
+        	}
+			
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -95,6 +114,19 @@ public class CityController {
 	public View deleteCity(@PathVariable("id") long id){
 		this.cityService.deleteCity(id);
 		return new RedirectView("/city/list", true, false);
+	}
+    
+    @RequestMapping(value = "/{id}", params ="view", method = RequestMethod.POST)
+	public String view(@PathVariable("id") long id, Model model){
+		model.addAttribute("city", cityService.getCity(id));
+		try{
+			City city = cityService.getCity(id);
+			city.addEventsInJson = true;
+			model.addAttribute("cityJSON", objectMapper.writeValueAsString(city));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return "city/viewcity";
 	}
 
 }

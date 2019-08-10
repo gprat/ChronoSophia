@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -7,12 +9,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ page trimDirectiveWhitespaces="true" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Liste des positions</title>
-
+<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -23,32 +24,38 @@
 <!-- Latest compiled JavaScript -->
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link title="timeline-styles" rel="stylesheet" href="//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+        <script src="//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js">     </script>
 </head>
 <body>
 <%@ include file="../navbar.jsp" %>
-    <div class="container">
- 	
-	<h3>Positions</h3>
-	
-	<TABLE class="table table-bordered">
-		<TR>
-			<TH>Nom</TH>
-			<th>Opérations</th>
-		</TR>
-		<c:forEach items="${roles}" var="role">
-			<TR>
-				<TD><c:out value="${role.name}"></c:out></TD>
-				<td>
-					<spring:url value="/role/${role.idRole}/delete" var="deleteUrl" />
-					<form:form method="post" action="${deleteUrl}" style="display: inline;"> <input type="submit" value="Supprimer" class="btn" /> </form:form>
-				</td>
-			</TR>
-		</c:forEach>
-	</TABLE>
-	<spring:url value="/role/add" var="addUrl" />
-	<form:form method="post" action="${addUrl}" style="display: inline;"> 
-		<input type="submit" value="Créer une position" class="btn" />
-	</form:form>
+<div class="container">
+<h3><c:out value="${city.toString()}"></c:out></h3>
+<p>
+  <c:out value="${city.description}"></c:out>
+</p>
+
+<div id="Timeline"></div>
+    <script>
+
+    var bpmnJsonString = ${cityJSON};
+
+        var options ={  
+           width:'100%',
+           timenav_height: '200',
+           timenav_position:'bottom',
+           language:'fr',
+           start_at_end:false,
+           initial_zoom:1,
+           zoom_sequence:[0.1,0.2,0.5,1]
+        }; 
+
+         window.timeline = new TL.Timeline('Timeline',bpmnJsonString,options);
+    </script>
+
+ 
 </div>
+
+
 </body>
 </html>

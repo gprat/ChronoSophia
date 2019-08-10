@@ -16,6 +16,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name="chronology")
 @JsonSerialize(using = ChronologySerializer.class)
 @NamedQuery(name="Chronology.findAll", query="SELECT c FROM Chronology c")
 public class Chronology implements Serializable {

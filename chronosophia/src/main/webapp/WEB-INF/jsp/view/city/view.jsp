@@ -7,15 +7,15 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2NOLXK45QWyN41-tNDdzb35EqpXGS0nQ"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl6p1I1Vw7gnyXbPK71HpnFBuuNKAeEAM"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Cities</title>
 </head>
 <body>
     <style>
         #map-canvas {
-          height: 600px;
-          height: 600px;
+          height: 800px;
+          width: 1200px;
           margin: 0px;
           padding: 0px
         }
@@ -31,13 +31,16 @@ var map;
 
 		// Giving the map som options
 		var mapOptions = {
-			zoom : 4,
-			center : new google.maps.LatLng(49.021660, 22.543945)
+			zoom : 6,
+			center : new google.maps.LatLng(50.11, 8.68)
 		};
 
 		// Creating the map
 		map = new google.maps.Map(document.getElementById('map-canvas'),
 				mapOptions);
+		
+		 // Add multiple markers to map
+	    var infoWindow = new google.maps.InfoWindow(), marker, i;
 
 		// Looping through all the entries from the JSON data
 		for (var i = 0; i < json.length; i++) {
@@ -48,31 +51,20 @@ var map;
 			// Adding a new marker for the object
 			var marker = new google.maps.Marker({
 				position : new google.maps.LatLng(obj.latitude, obj.longitude),
-				map : map,
-				title : obj.title
-			// this works, giving the marker a title with the correct title
+				label : obj.label,
+				map : map
 			});
-
-			// Adding a new info window for the object
-			var clicker = addClicker(marker, obj.title);
+			
+			google.maps.event.addListener(marker, 'click', (function(marker, i) {
+	            return function() {
+	                infoWindow.setContent(json[i].infocontent);
+	                infoWindow.open(map, marker);
+	            }
+	        })(marker, i));
 
 		} // end loop
 
-		// Adding a new click event listener for the object
-		function addClicker(marker, content) {
-			google.maps.event.addListener(marker, 'click', function() {
-
-				if (infowindow) {
-					infowindow.close();
-				}
-				infowindow = new google.maps.InfoWindow({
-					content : content
-				});
-				infowindow.open(map, marker);
-
-			});
-		}
-
+		
 	}
 
 	//Initialize the map

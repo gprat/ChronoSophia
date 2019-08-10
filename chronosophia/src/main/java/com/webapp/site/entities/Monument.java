@@ -9,6 +9,7 @@ import javax.persistence.*;
  * 
  */
 @Entity
+@Table(name="monument")
 @NamedQuery(name="Monument.findAll", query="SELECT m FROM Monument m")
 public class Monument implements Serializable {
 	private static final long serialVersionUID = 1L;

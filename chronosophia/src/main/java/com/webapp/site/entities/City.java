@@ -19,6 +19,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name="city")
 @JsonSerialize(using = CitySerializer.class)
 @NamedQuery(name="City.findAll", query="SELECT c FROM City c")
 public class City implements Serializable {
@@ -44,7 +45,7 @@ public class City implements Serializable {
 	private Country country;
 
 	//bi-directional many-to-one association to Event
-	@OneToMany(mappedBy="city")
+	@OneToMany(mappedBy="city", fetch = FetchType.EAGER)
 	private List<Event> events;
 
 	//bi-directional many-to-one association to Monument
@@ -55,6 +56,12 @@ public class City implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="idUser")
 	private User user;
+	
+	@Lob
+	private String description;
+	
+	@Transient
+	public boolean addEventsInJson = false;
 
 	public City() {
 	}
@@ -156,6 +163,15 @@ public class City implements Serializable {
 		return monument;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
 	public String toString(){
 		return name + ", " + country.getName();
 	}

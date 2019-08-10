@@ -62,12 +62,18 @@ public class DefaultCityService implements CityService {
 		form.setCountryname(city.getCountry().getName());
 		form.setLatitude(city.getLatitude());
 		form.setLongitude(city.getLongitude());
+		form.setDescription(city.getDescription());
 		return form;
 	}
 	
 	@Override
 	public List<City> getCitiesByLogin(String login){
 		return this.cityRepository.findByUser_Login(login);
+	}
+	
+	@Override
+	public List<City> getCitiesByEventYear(String login, int yearStart, int yearEnd){
+		return this.cityRepository.findByUser_LoginAndEvents_Date_YearBetween(login, yearStart, yearEnd);
 	}
 
 }

@@ -18,6 +18,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name="figure")
 @JsonSerialize(using = FigureSerializer.class)
 @NamedQuery(name="Figure.findAll", query="SELECT f FROM Figure f")
 public class Figure implements Serializable {

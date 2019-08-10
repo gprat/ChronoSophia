@@ -28,7 +28,7 @@
 <body>
 <%@ include file="../navbar.jsp" %>
 <div class="container">
-	<p>Villes</p>
+	<h3>Villes</h3>
 	<TABLE class="table table-bordered">
 		<TR>
 			<TH>Nom</TH>
@@ -42,7 +42,7 @@
 				<TD>
 					<spring:url value="/city/${city.idCity}" var="cityUrl" />
 				  	<form:form method="post" action="${cityUrl}" style="display: inline;"> 
-				  	<!--<input type="submit" value="Afficher" name="view" class="btn" />  -->
+				  	<input type="submit" value="Afficher" name="view" class="btn" />
 				  	<input type="submit" value="Mettre à jour" name="update" class="btn" /> 
 				  	<input type="submit" value="Supprimer" name="delete" class="btn" />
 				  	</form:form>
@@ -54,6 +54,19 @@
 	<form:form method="post" action="${addUrl}" style="display: inline;"> 
 		<input type="submit" value="Créer une ville" class="btn" />
 	</form:form>
+	<br>
+	<spring:url value="/city/view" var="viewUrl" />
+	<form:form method="post"  class="form-inline"  action="${viewUrl}" modelAttribute="eventsSpan">
+  <div class="form-group">
+    <label>De :</label>
+    <form:input type="text" class="form-control" path="startYear"/>
+  </div>
+  <div class="form-group">
+    <label>à :</label>
+    <form:input type="text" class="form-control" path="endYear"/>
+  </div>
+  <input type="submit" value="Voir les villes" class="btn" />
+</form:form>
 </div>
 </body>
 </html>

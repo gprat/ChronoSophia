@@ -12,6 +12,7 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name="almanac")
 @NamedQuery(name="Almanac.findAll", query="SELECT a FROM Almanac a")
 public class Almanac implements Serializable {
 	private static final long serialVersionUID = 1L;

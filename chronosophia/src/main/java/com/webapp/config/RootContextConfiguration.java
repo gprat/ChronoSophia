@@ -94,9 +94,9 @@ public class RootContextConfiguration
     	ds.setName("pool-ds");
     	ds.setDescription("Pooling DataSource");
     	ds.setDriverClassName("com.mysql.jdbc.Driver");
-    	ds.setUrl("jdbc:mysql://localhost:3306/mydb");
-    	ds.setUser("root");
-    	ds.setPassword("root");
+    	ds.setUrl("jdbc:mysql://localhost:3306/chronosophia");
+    	ds.setUser("admin");
+    	ds.setPassword("1701paris2214");
     	ds.setMinPool(5);
     	ds.setMaxPool(10);
     	ds.setMaxSize(30);

@@ -33,4 +33,6 @@ public interface CityService {
 	CityForm getCityForm(long id);
 	
 	List<City> getCitiesByLogin(String login);
+	
+	List<City> getCitiesByEventYear(String login, int yearStart, int yearEnd);
 }

@@ -13,6 +13,8 @@ public class CityForm {
 	private BigDecimal longitude;
 	
 	private Long idCity;
+	
+	private String description;
 
 	public Long getIdCity() {
 		return idCity;
@@ -52,6 +54,14 @@ public class CityForm {
 
 	public void setCountryname(String countryname) {
 		this.countryname = countryname;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	

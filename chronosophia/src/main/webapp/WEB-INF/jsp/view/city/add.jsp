@@ -8,8 +8,7 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2NOLXK45QWyN41-tNDdzb35EqpXGS0nQ&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
-        async defer></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Ajouter une ville</title>
 <link rel="stylesheet"
@@ -66,6 +65,12 @@
 		<div class="col-sm-7">
 		<form:input path="latitude" id="latitude"  class="form-control"/>
 		</div>
+		<div class="form-group">
+				<label class="control-label col-md-3 col-sm-4">Description : </label>
+				<div class="col-sm-7">
+					<form:textarea path="description" class="form-control" placeholder="Description" rows="8" />
+				</div>
+			</div>
 		</div>
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-8">
@@ -144,6 +149,8 @@
 		}
 		// [END region_geolocation]
 	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAl6p1I1Vw7gnyXbPK71HpnFBuuNKAeEAM&signed_in=true&libraries=places&language=fr&callback=initAutocomplete"
+        async defer></script>
 </div>
 </body>
 </html>

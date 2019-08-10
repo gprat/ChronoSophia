@@ -2,22 +2,18 @@ package com.webapp.site;
 
 import javax.validation.constraints.*;
 
-import org.hibernate.validator.constraints.NotEmpty;
 
 public class ChronologyForm {
 
 	
-	@NotEmpty
 	String name;
 	
 	Long id;
 	
 	String category;
 	
-	@NotEmpty
 	String eventList;
-	
-	@NotEmpty
+
 	String description;
 	
 	String url;

@@ -14,6 +14,7 @@ import java.util.Set;
  * 
  */
 @Entity
+@Table(name="user")
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -62,7 +63,7 @@ public class User implements Serializable {
 	private List<Role> roles;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_USERPROFILE", 
+    @JoinTable(name = "user_userprofile", 
              joinColumns = { @JoinColumn(name = "idUser") }, 
              inverseJoinColumns = { @JoinColumn(name = "idProfile") })
     private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
